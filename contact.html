@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>FaceParty — Contact</title><style>:root{color-scheme:light dark}*{box-sizing:border-box}body{max-width:760px;margin:0 auto;padding:32px 20px 80px;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#1c1c1e;background:#fff}
+@media(prefers-color-scheme:dark){body{color:#e6e6e6;background:#0b0b0c}a{color:#6ea8ff}input,textarea,select{background:#17171a!important;color:#e6e6e6!important;border-color:#333!important}}
+h1{font-size:24px;margin:0 0 4px}h2{font-size:19px;margin:30px 0 8px}p{margin:10px 0}ul{margin:8px 0;padding-left:22px}li{margin:5px 0}.meta{opacity:.6;font-size:13px}
+label{display:block;font-weight:600;margin:16px 0 6px}input,textarea,select{width:100%;padding:12px;font:inherit;border:1px solid #c9c9ce;border-radius:10px;background:#fff;color:inherit}textarea{min-height:140px}
+button{margin-top:18px;padding:13px 20px;font:inherit;font-weight:700;border:0;border-radius:10px;background:#ff2f4d;color:#fff;cursor:pointer}button.danger{background:#c1121f}button[disabled]{opacity:.5}
+.msg{margin-top:16px;padding:12px;border-radius:10px;display:none}.msg.ok{display:block;background:#0f3d1f;color:#bff0cf}.msg.err{display:block;background:#4a1219;color:#ffd0d6}
+nav.foot{margin-top:48px;padding-top:18px;border-top:1px solid #8884;font-size:13px;display:flex;flex-wrap:wrap;gap:6px 16px}</style></head>
+<body>
+<h1>FaceParty — Contact</h1>
+<p>Pour toute question, demande RGPD (accès, rectification, effacement…) ou contestation d’une sanction, écris-nous ici. Nous répondons dès que possible.</p>
+<form id="f">
+<label for="kind">Sujet</label><select id="kind"><option value="contact">Question générale</option><option value="privacy">Mes données personnelles (RGPD)</option><option value="safety">Sécurité / protection des enfants</option><option value="deletion">Suppression de mon compte (je n’ai plus accès à l’app)</option></select>
+<label for="email">Ton e-mail (pour te répondre)</label><input id="email" type="email" required maxlength="254" autocomplete="email">
+<label for="message">Message</label><textarea id="message" required minlength="5" maxlength="4000"></textarea>
+<button id="go" type="submit">Envoyer</button><div id="m" class="msg" role="status"></div></form>
+<nav class="foot"><a href="index.html">Accueil</a><a href="terms.html">CGU</a><a href="privacy.html">Confidentialité</a><a href="legal.html">Mentions légales</a><a href="safety.html">Sécurité &amp; règles</a><a href="contact.html">Contact</a><a href="report.html">Signaler</a><a href="delete-account.html">Supprimer mon compte</a></nav>
+<script>
+const SB_URL="https://bwgtzhbfgkmdhhdjmyfr.supabase.co",SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3Z3R6aGJmZ2ttZGhoZGpteWZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMDkwMjAsImV4cCI6MjEwMzc4NTAyMH0.wQAavDVGNY-y4uPN2Zdd-dEemzxvqFW-JEs9T5JgzFI";
+document.getElementById('f').addEventListener('submit',async(e)=>{e.preventDefault();
+ const b=document.getElementById('go'),m=document.getElementById('m');b.disabled=true;m.className='msg';m.textContent='';
+ const kindEl=document.getElementById('kind');
+ try{const r=await fetch(SB_URL+'/rest/v1/contact_requests',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',Prefer:'return=minimal'},
+  body:JSON.stringify({kind:kindEl?kindEl.value:"contact",email:document.getElementById('email').value.trim(),message:document.getElementById('message').value.trim()})});
+  if(!r.ok)throw new Error(r.status===400?'Vérifie l’e-mail et le message (5 caractères minimum).':'Envoi impossible pour le moment, réessaie plus tard.');
+  m.className='msg ok';m.textContent='Merci, ta demande a bien été reçue. Nous te répondons à l’adresse indiquée.';e.target.reset();
+ }catch(err){m.className='msg err';m.textContent=err.message;}finally{b.disabled=false;}});
+</script>
+</body></html>
